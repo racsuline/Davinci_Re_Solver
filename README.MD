@@ -12,9 +12,11 @@ This program is far from being the best or the most sophisticated thing out ther
 
 DaVinci Resolve on Linux can be picky with video formats. I got tired of typing ffmpeg commands over and over, so I wrapped them in a GUI. That's it.
 
-## Requirements
+## Installation
 
-- ffmpeg installed on your system
+- Download the AppImage from the [RELEASES](https://github.com/racsuline/Davinci_Re-Solver/releases) page.
+- Option 1 (Recommended): Integrate it with your system using something like [Gear Level](https://flathub.org/en/apps/it.mijorus.gearlever)
+- Option 2: Made it executable with `chmod +x DaVinci_Re-Solver-x86_64.AppImage`, then just open it.
 
 ## Note
 
