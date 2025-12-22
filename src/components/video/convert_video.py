@@ -3,7 +3,7 @@ import threading
 import flet as ft
 
 
-def convertir_video_thread(video_path, video_name, files_path, progress_bar, progress_text, page, suffix, name_list):
+def convert_thread(video_path, video_name, files_path, progress_bar, progress_text, page, suffix, name_list):
     if video_path is None:
         progress_text.value = "You need to select a file first"
         page.update()
@@ -90,6 +90,6 @@ def convertir_video_thread(video_path, video_name, files_path, progress_bar, pro
             progress_text.visible = False
             page.update()
 
-def convertir_video(video_path, video_name, files_path, progress_bar, progress_text, page, suffix, name_list):
-    thread = threading.Thread(target=convertir_video_thread, args=(video_path, video_name, files_path, progress_bar, progress_text, page, suffix, name_list), daemon=True)
+def convert_video(video_path, video_name, files_path, progress_bar, progress_text, page, suffix, name_list):
+    thread = threading.Thread(target=convert_thread, args=(video_path, video_name, files_path, progress_bar, progress_text, page, suffix, name_list), daemon=True)
     thread.start()

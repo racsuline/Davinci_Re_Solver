@@ -1,6 +1,5 @@
 import flet as ft
 
-
 def on_picked_file(e: ft.FilePickerResultEvent, name_list, page):
     if not e.files:
         return None, None, None
@@ -17,12 +16,23 @@ def on_picked_file(e: ft.FilePickerResultEvent, name_list, page):
 
     return video_path, video_name, name_list
 
-def carpeta(e: ft.FilePickerResultEvent, directorio, page):
+def folder(e: ft.FilePickerResultEvent, output_directory, page):
     if not e.path:
         return None
 
     files_path = e.path
-    directorio.value = f"Output: {e.path}"
+    output_directory.value = f"Output: {e.path}"
     page.update()
 
     return files_path
+
+
+def create_file_pickers(page, on_picked_file_callback, folder_callback):
+    
+    file_picker = ft.FilePicker(on_result=on_picked_file_callback)
+    folder_picker = ft.FilePicker(on_result=folder_callback)
+    
+    page.overlay.append(file_picker)
+    page.overlay.append(folder_picker)
+    
+    return file_picker, folder_picker
