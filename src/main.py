@@ -120,7 +120,7 @@ def main(page: ft.Page):
     select_video = ft.FilledButton(
         "Upload Videos",
         icon = ft.Icons.UPLOAD_FILE_ROUNDED,
-        on_click = lambda _: file_pick.pick_files(allowed_extensions = ["mp4", "mov", "avi", "mkv", "flv", "webm", "wmv", "m4v"], allow_multiple= True),
+        on_click = lambda _: file_pick.pick_files(allowed_extensions = ["mp4", "mov", "avi", "mkv", "flv", "webm", "wmv", "m4v"], allow_multiple= True, dialog_title = "Select Video Files"),
         color = ft.Colors.WHITE,
         style = ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10),),
         bgcolor = ft.Colors.RED_800,
