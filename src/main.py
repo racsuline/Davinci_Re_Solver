@@ -8,14 +8,13 @@ def main(page: ft.Page):
     video_path = None
     files_path = None
     video_name = None
-    name_list = ft.ListView(expand=True, spacing=5, auto_scroll=True)
+
 
     
     page.title = "Davinci Re-Solver for Linux"
     page.padding = 10
     page.theme_mode = ft.ThemeMode.SYSTEM
 
-    
     output_directory = ft.Text("Output Folder: Not selected")
 
     # Suffix field
@@ -54,6 +53,7 @@ def main(page: ft.Page):
         nonlocal name_list
         cnv.convert_video(video_path, video_name, files_path, progress_bar, progress_text, page, suffix, name_list)
 
+    # Menu
     burger = ft.PopupMenuButton(
             tooltip = "Main Menu",
             icon = ft.Icons.MENU,
@@ -67,6 +67,8 @@ def main(page: ft.Page):
         )
     
     # VIDEO LIST AND STATUS Converted/Not Converted
+
+    name_list = ft.ListView(expand=True, spacing=5, auto_scroll=True)
 
     loaded_videos = ft.Container(
         name_list,
