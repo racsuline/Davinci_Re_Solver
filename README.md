@@ -14,7 +14,7 @@ DaVinci Resolve on Linux can be picky with video formats. I got tired of typing 
 
 ## Installation
 
-<a href="https://github.com/racsuline/Davinci_Re-Solver/releases"><img width='240' alt='Download AppImage' src='https://docs.appimage.org/_images/download-appimage-banner.svg'/></a>
+<a href="https://codeberg.org/racsu/Davinci_Re-Solver/releases"><img width='240' alt='Download AppImage' src='https://docs.appimage.org/_images/download-appimage-banner.svg'/></a>
 
 Option 1 (Recommended): Integrate it with your system using something like [Gear Level](https://flathub.org/en/apps/it.mijorus.gearlever)
 
