@@ -1,6 +1,6 @@
 # Davinci Re-Solver for Linux
 
-![Davinci Re-Solver Screenshot](https://i.imgur.com/gMSPTNO.png)
+![Davinci Re-Solver Screenshot](https://i.imgur.com/tUTIqeV.png)
 
 A simple Python-Flet app I made to practice what I've been learning in university, and honestly, for my own use since I'm on Linux and constantly need to convert videos to a format that works with DaVinci Resolve.
 
