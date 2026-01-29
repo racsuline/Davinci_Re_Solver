@@ -29,9 +29,9 @@ copyright = "Copyright (C) 2025 by Racsu"
 [tool.flet.app]
 path = "src"
 
-[tool.uv]
-dev-dependencies = [
-    "flet[all]==0.28.3",
+[dependency-groups]
+dev = [
+    "flet[all]==0.28.3"
 ]
 
 [tool.poetry]

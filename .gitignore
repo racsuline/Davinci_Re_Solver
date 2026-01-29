@@ -9,6 +9,8 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
+AppImage/usr/
+AppImage/Davinci_Re-Solver.AppImage
 develop-eggs/
 dist/
 downloads/

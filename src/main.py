@@ -32,7 +32,7 @@ def main(page: ft.Page):
     )
 
     def open_url():
-        page.launch_url("https://github.com/racsuline/Davinci_Re-Solver")
+        page.launch_url("https://codeberg.org/racsu/Davinci_Re-Solver")
 
     def update_suffix():
         nonlocal suffix
@@ -70,7 +70,7 @@ def main(page: ft.Page):
         items=[
             ft.PopupMenuItem(
                 content=ft.Text(
-                    "Github Repo",
+                    "Codeberg Repo",
                     theme_style=ft.TextThemeStyle.LABEL_MEDIUM,
                     text_align=ft.TextAlign.CENTER,
                 ),

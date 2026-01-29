@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=DaVinci Re-Solver
+Comment=Converter to make video files compatible with Resolve on Linux
+Exec=davinci_solver
+Type=Application
+Icon=re_solver
+Categories=Utility
+Terminal=false
