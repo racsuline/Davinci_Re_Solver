@@ -44,11 +44,17 @@ def main(page: ft.Page):
 
     def on_picked_file(e):
         nonlocal video_path, video_name, name_list
-        video_path, video_name, name_list = sf.on_picked_file(e, name_list, page)
+        new_video_path, new_video_name, new_name_list = sf.on_picked_file(e, name_list, page)
+        if new_video_path is not None:
+            video_path = new_video_path
+            video_name = new_video_name
+            name_list = new_name_list
 
     def folder(e):
         nonlocal files_path
-        files_path = sf.folder(e, output_directory, page)
+        new_files_path = sf.folder(e, output_directory, page)
+        if new_files_path:
+            files_path = new_files_path
 
     def convert_video():
         nonlocal name_list
