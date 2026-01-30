@@ -1,53 +1,30 @@
 import flet as ft
 
-from components.pickers import select_file as sf
-from components.video import convert_video as cnv
+from components.pickers import select_files as sf
+from components.conversions import convert_videos as cnv
 
 
 def main(page: ft.Page):
+
+    # Files Variables
     video_path = None
     files_path = None
     video_name = None
-    name_list = ft.ListView(expand=True, spacing=5, auto_scroll=True)
+    files_list = ft.ListView(expand=True, spacing=5, auto_scroll=True)
 
+    # Page Settings
     page.title = "Davinci Re-Solver for Linux"
     page.padding = 10
     page.theme_mode = ft.ThemeMode.SYSTEM
-    page.theme = ft.Theme(color_scheme_seed=ft.Colors.PURPLE_ACCENT)
+    page.theme = ft.Theme(color_scheme_seed=ft.Colors.BLUE_ACCENT)
 
-    # Suffix field
-
-    suffix = ""
-
-    suffix_field = ft.TextField(
-        value="",
-        label="Add a suffix to the converted file name",
-        hint_text="_Example",
-        on_change=lambda e: update_suffix(),
-        width=400,
-        border_color=ft.Colors.SURFACE_TINT,
-        border_radius = 8
-    )
-
-    output_field = ft.TextField(
-        value="",
-        hint_text="Select an Output Folder",
-        on_change=lambda e: update_output(),
-        width=350,
-        border_color=ft.Colors.TRANSPARENT,
-        border_radius = 0
-    )
-
+    # Functions
     def open_url():
         page.launch_url("https://codeberg.org/racsu/Davinci_Re-Solver")
 
-    def update_suffix():
+    def update_suffix(e):
         nonlocal suffix
-        if not suffix_field.value:
-            return
-        else:
-            suffix = suffix_field.value
-            return
+        suffix = suffix_field.value
 
     def update_output():
         nonlocal files_path
@@ -61,52 +38,35 @@ def main(page: ft.Page):
             return
 
     def on_picked_file(e):
-        nonlocal video_path, video_name, name_list
-        new_video_path, new_video_name, new_name_list = sf.on_picked_file(e, name_list, page)
+        nonlocal video_path, video_name, files_list
+        new_video_path, new_video_name, new_files_list = sf.on_picked_file(e, files_list, page)
         if new_video_path is not None:
             video_path = new_video_path
             video_name = new_video_name
-            name_list = new_name_list
+            files_list = new_files_list
 
-    def folder(e):
+    def on_new_output(e):
         nonlocal files_path
         new_files_path = sf.folder(e, page, output_field)
         if new_files_path:
             files_path = new_files_path
 
     def convert_video():
-        nonlocal name_list
-        cnv.convert_video(
-            video_path,
-            video_name,
-            files_path,
-            progress_bar,
-            progress_text,
-            page,
-            suffix,
-            name_list,
-        )
+        nonlocal files_list
+        cnv.convert_video(video_path,video_name,files_path,progress_bar,progress_text,page,suffix,files_list)
 
-    burger = ft.PopupMenuButton(
-        tooltip="Main Menu",
-        icon=ft.Icons.MENU,
-        icon_color=ft.Colors.ON_SURFACE,
-        items=[
-            ft.PopupMenuItem(
-                content=ft.Text(
-                    "Codeberg Repo",
-                    theme_style=ft.TextThemeStyle.LABEL_MEDIUM,
-                    text_align=ft.TextAlign.CENTER,
-                ),
-                on_click=lambda e: open_url(),
-            )
-        ],
-    )
+    def file_clear():
+        nonlocal files_list, video_path, video_name
+        video_path = None
+        video_name = None 
+        files_list.controls.clear()
+        progress_bar.value = 0
+        progress_text.value = "No conversion is running yet"
+        page.update()
 
-    # VIDEO LIST AND STATUS Converted/Not Converted
-
+    # CONTAINER FOR VIDEO LIST AND STATUS (Converted/Not Converted)
     loaded_videos = ft.Container(
-        name_list,
+        files_list,
         border=ft.border.all(1, ft.Colors.SURFACE_TINT),
         border_radius=8,
         height=200,
@@ -130,27 +90,27 @@ def main(page: ft.Page):
         padding=10,
     )
 
-    # Pickers
-    file_pick, folder_pick = sf.create_file_pickers(
-        page, on_picked_file_callback=on_picked_file, folder_callback=folder
-    )
+    # File/Folder Pickers
+    file_pick, folder_pick = sf.create_file_pickers(page, on_picked_file_callback=on_picked_file, folder_callback=on_new_output)
 
     # BUTTONS
+    menu_button = ft.PopupMenuButton(
+        tooltip="Main Menu",
+        icon=ft.Icons.MENU,
+        icon_color=ft.Colors.ON_SURFACE,
+        items=[
+            ft.PopupMenuItem(
+                content=ft.Text(
+                    "Codeberg Repo",
+                    theme_style=ft.TextThemeStyle.LABEL_MEDIUM,
+                    text_align=ft.TextAlign.CENTER,
+                ),
+                on_click=lambda e: open_url(),
+            )
+        ],
+    )
 
-    def file_clear():
-        nonlocal name_list, video_path, video_name
-        if video_name or video_path:
-            video_path = None
-            video_name = None 
-            name_list.controls.clear()
-            progress_bar.value = 0
-            progress_text.value = "No conversion is running yet"
-            page.update()
-            return
-        else:
-            return
-
-    clear_files = ft.FilledButton(
+    clear_files_button = ft.FilledButton(
         "Clear Files",
         icon=ft.Icons.DELETE,
         on_click = lambda e: file_clear(),
@@ -162,7 +122,33 @@ def main(page: ft.Page):
         bgcolor=ft.Colors.ERROR,
     )
 
-    select_output = ft.IconButton(
+    file_selection_button = ft.FilledButton(
+        "Upload Files",
+        icon=ft.Icons.FILE_UPLOAD_SHARP,
+        on_click=lambda _: file_pick.pick_files(
+            allowed_extensions=["mp4","mov","avi","mkv","flv","webm","wmv","m4v"],
+            allow_multiple=True,
+            dialog_title="Select Video Files",
+        ),
+        style=ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(radius=8),
+        ),
+        scale = 1.25,
+        tooltip="Select video files to convert",
+    )
+
+    start_conversions_button = ft.FilledButton(
+        "Convert File",
+        icon=ft.Icons.VIDEO_SETTINGS,
+        on_click=lambda v: convert_video(),
+        style=ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(radius=8),
+        ),
+        scale = 1.25
+    )
+
+    # OUTPUT DIRECTORY SELECTION
+    output_selection_button = ft.IconButton(
         icon=ft.Icons.DRIVE_FOLDER_UPLOAD,
         on_click=lambda _: folder_pick.get_directory_path(
             dialog_title="Choose a folder to save the converted files"
@@ -174,38 +160,13 @@ def main(page: ft.Page):
         tooltip="Where converted videos will be saved",
     )
 
-    select_video = ft.FilledButton(
-        "Upload Files",
-        icon=ft.Icons.FILE_UPLOAD_SHARP,
-        on_click=lambda _: file_pick.pick_files(
-            allowed_extensions=[
-                "mp4",
-                "mov",
-                "avi",
-                "mkv",
-                "flv",
-                "webm",
-                "wmv",
-                "m4v",
-            ],
-            allow_multiple=True,
-            dialog_title="Select Video Files",
-        ),
-        style=ft.ButtonStyle(
-            shape=ft.RoundedRectangleBorder(radius=8),
-        ),
-        scale = 1.25,
-        tooltip="Select video files to convert",
-    )
-
-    start_converting = ft.FilledButton(
-        "Convert File",
-        icon=ft.Icons.VIDEO_SETTINGS,
-        on_click=lambda v: convert_video(),
-        style=ft.ButtonStyle(
-            shape=ft.RoundedRectangleBorder(radius=8),
-        ),
-        scale = 1.25
+    output_field = ft.TextField(
+        value="",
+        hint_text="Select an Output Folder",
+        on_change=lambda e: update_output(),
+        width=350,
+        border_color=ft.Colors.TRANSPARENT,
+        border_radius = 0
     )
 
     output_container = ft.Container(
@@ -213,7 +174,7 @@ def main(page: ft.Page):
             [
                 output_field,
                 ft.VerticalDivider(width=1),
-                select_output,
+                output_selection_button,
             ],
             spacing=0,
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
@@ -225,6 +186,19 @@ def main(page: ft.Page):
         width=400,
     )
 
+    # Suffix field
+    suffix = ""
+
+    suffix_field = ft.TextField(
+        value="",
+        label="Add a suffix to the converted file name",
+        hint_text="_Example",
+        on_change=lambda e: update_suffix(),
+        width=400,
+        border_color=ft.Colors.SURFACE_TINT,
+        border_radius = 8
+    )
+
     # LAYOUT
     page.add(
         ft.Column(
@@ -233,7 +207,7 @@ def main(page: ft.Page):
             controls=[
                 ft.Row(
                     [
-                        burger,
+                        menu_button,
                         ft.Text(
                             "Convert your videos files and edit on Davinci Resolve!",
                             size=20,
@@ -261,7 +235,7 @@ def main(page: ft.Page):
                     padding=10,
                     content=ft.SafeArea(
                         ft.Row(
-                            [select_video, start_converting, clear_files],
+                            [file_selection_button, start_conversions_button, clear_files_button],
                             alignment=ft.MainAxisAlignment.CENTER,
                             wrap=True,
                             spacing = 50

@@ -4,7 +4,7 @@ import flet as ft
 from pathlib import Path
 
 
-def convert_thread(video_path, video_name, files_path, progress_bar, progress_text, page, suffix, name_list):
+def convert_thread(video_path, video_name, files_path, progress_bar, progress_text, page, suffix, files_list):
     if video_path is None:
         progress_text.value = "You need to select a file first"
         page.update()
@@ -77,7 +77,7 @@ def convert_thread(video_path, video_name, files_path, progress_bar, progress_te
                     progress_bar.value = 1.0
                     progress_text.value = "Progress: 100%"
 
-                    for control in name_list.controls:
+                    for control in files_list.controls:
                         if isinstance(control, ft.Text) and control.value.startswith(name):
                             control.value = f"{name} - Converted"
                             break
@@ -98,6 +98,6 @@ def convert_thread(video_path, video_name, files_path, progress_bar, progress_te
         page.update()
         return
 
-def convert_video(video_path, video_name, files_path, progress_bar, progress_text, page, suffix, name_list):
-    thread = threading.Thread(target=convert_thread, args=(video_path, video_name, files_path, progress_bar, progress_text, page, suffix, name_list), daemon=True)
+def convert_video(video_path, video_name, files_path, progress_bar, progress_text, page, suffix, files_list):
+    thread = threading.Thread(target=convert_thread, args=(video_path, video_name, files_path, progress_bar, progress_text, page, suffix, files_list), daemon=True)
     thread.start()

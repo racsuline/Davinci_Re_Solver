@@ -1,20 +1,20 @@
 import flet as ft
 
-def on_picked_file(e: ft.FilePickerResultEvent, name_list, page):
+def on_picked_file(e: ft.FilePickerResultEvent, files_list, page):
     if not e.files:
         return None, None, None
     
-    name_list.controls.clear()
+    files_list.controls.clear()
     
     video_name = [f.name.rsplit('.', 1)[0] for f in e.files]
     video_path = [f.path for f in e.files]
     
     for name in video_name:
-        name_list.controls.append(ft.Text(f"{name} - Not converted"))
+        files_list.controls.append(ft.Text(f"{name} - Not converted"))
 
     page.update()
 
-    return video_path, video_name, name_list
+    return video_path, video_name, files_list
 
 def folder(e: ft.FilePickerResultEvent, page, output_field):
     if not e.path:
