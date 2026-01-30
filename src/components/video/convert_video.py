@@ -1,6 +1,7 @@
 import subprocess
 import threading
 import flet as ft
+from pathlib import Path
 
 
 def convert_thread(video_path, video_name, files_path, progress_bar, progress_text, page, suffix, name_list):
@@ -14,7 +15,10 @@ def convert_thread(video_path, video_name, files_path, progress_bar, progress_te
         page.update()
         return
 
-    if files_path:
+    path_to_output = Path(files_path)
+    
+
+    if path_to_output.is_dir():
         try:
             progress_text.value = "Converting..."
             progress_bar.value = 0
@@ -89,6 +93,10 @@ def convert_thread(video_path, video_name, files_path, progress_bar, progress_te
             progress_bar.visible = False
             progress_text.visible = False
             page.update()
+    else:
+        progress_text.value = "The selected output path is not an existing directory"
+        page.update()
+        return
 
 def convert_video(video_path, video_name, files_path, progress_bar, progress_text, page, suffix, name_list):
     thread = threading.Thread(target=convert_thread, args=(video_path, video_name, files_path, progress_bar, progress_text, page, suffix, name_list), daemon=True)

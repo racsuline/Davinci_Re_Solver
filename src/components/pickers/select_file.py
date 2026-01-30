@@ -16,12 +16,12 @@ def on_picked_file(e: ft.FilePickerResultEvent, name_list, page):
 
     return video_path, video_name, name_list
 
-def folder(e: ft.FilePickerResultEvent, output_directory, page):
+def folder(e: ft.FilePickerResultEvent, page, output_field):
     if not e.path:
         return None
 
     files_path = e.path
-    output_directory.value = f"Output: {e.path}"
+    output_field.value = files_path
     page.update()
 
     return files_path

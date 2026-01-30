@@ -15,8 +15,6 @@ def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.SYSTEM
     page.theme = ft.Theme(color_scheme_seed=ft.Colors.PURPLE_ACCENT)
 
-    output_directory = ft.Text("Output Folder: Not selected")
-
     # Suffix field
 
     suffix = ""
@@ -31,6 +29,15 @@ def main(page: ft.Page):
         border_radius = 8
     )
 
+    output_field = ft.TextField(
+        value="",
+        hint_text="Select an Output Folder",
+        on_change=lambda e: update_output(),
+        width=350,
+        border_color=ft.Colors.TRANSPARENT,
+        border_radius = 0
+    )
+
     def open_url():
         page.launch_url("https://codeberg.org/racsu/Davinci_Re-Solver")
 
@@ -40,6 +47,17 @@ def main(page: ft.Page):
             return
         else:
             suffix = suffix_field.value
+            return
+
+    def update_output():
+        nonlocal files_path
+        if not output_field.value:
+            return
+        else:
+            new_files_path = output_field.value
+            if new_files_path:
+                files_path = new_files_path
+                page.update()
             return
 
     def on_picked_file(e):
@@ -52,7 +70,7 @@ def main(page: ft.Page):
 
     def folder(e):
         nonlocal files_path
-        new_files_path = sf.folder(e, output_directory, page)
+        new_files_path = sf.folder(e, page, output_field)
         if new_files_path:
             files_path = new_files_path
 
@@ -118,22 +136,47 @@ def main(page: ft.Page):
     )
 
     # BUTTONS
-    select_output = ft.FilledButton(
-        "Select Folder",
-        icon=ft.Icons.FOLDER,
+
+    def file_clear():
+        nonlocal name_list, video_path, video_name
+        if video_name or video_path:
+            video_path = None
+            video_name = None 
+            name_list.controls.clear()
+            progress_bar.value = 0
+            progress_text.value = "No conversion is running yet"
+            page.update()
+            return
+        else:
+            return
+
+    clear_files = ft.FilledButton(
+        "Clear Files",
+        icon=ft.Icons.DELETE,
+        on_click = lambda e: file_clear(),
+        style=ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(radius=8),
+        ),
+        scale = 1.25,
+        tooltip="Clear all uploaded files",
+        bgcolor=ft.Colors.ERROR,
+    )
+
+    select_output = ft.IconButton(
+        icon=ft.Icons.DRIVE_FOLDER_UPLOAD,
         on_click=lambda _: folder_pick.get_directory_path(
             dialog_title="Choose a folder to save the converted files"
         ),
         style=ft.ButtonStyle(
             shape=ft.RoundedRectangleBorder(radius=8),
         ),
-        scale = 1.25,
+        scale = 1,
         tooltip="Where converted videos will be saved",
     )
 
     select_video = ft.FilledButton(
-        "Upload Videos",
-        icon=ft.Icons.UPLOAD_FILE_ROUNDED,
+        "Upload Files",
+        icon=ft.Icons.FILE_UPLOAD_SHARP,
         on_click=lambda _: file_pick.pick_files(
             allowed_extensions=[
                 "mp4",
@@ -157,12 +200,29 @@ def main(page: ft.Page):
 
     start_converting = ft.FilledButton(
         "Convert File",
-        icon=ft.Icons.VIDEO_CHAT,
+        icon=ft.Icons.VIDEO_SETTINGS,
         on_click=lambda v: convert_video(),
         style=ft.ButtonStyle(
             shape=ft.RoundedRectangleBorder(radius=8),
         ),
         scale = 1.25
+    )
+
+    output_container = ft.Container(
+        content=ft.Row(
+            [
+                output_field,
+                ft.VerticalDivider(width=1),
+                select_output,
+            ],
+            spacing=0,
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+        ),
+        border=ft.border.all(1, ft.Colors.SURFACE_TINT),
+        border_radius=8,
+        padding=ft.padding.symmetric(horizontal=8),
+        height=48,
+        width=400,
     )
 
     # LAYOUT
@@ -184,13 +244,13 @@ def main(page: ft.Page):
                 ),
                 ft.Column(
                     [
-                        output_directory,
                         loaded_videos,
                     ],
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 ),
-                ft.Row(
+                ft.Column(
                     [
+                        output_container,
                         suffix_field,
                     ],
                     alignment=ft.MainAxisAlignment.CENTER,
@@ -201,7 +261,7 @@ def main(page: ft.Page):
                     padding=10,
                     content=ft.SafeArea(
                         ft.Row(
-                            [select_output, select_video, start_converting],
+                            [select_video, start_converting, clear_files],
                             alignment=ft.MainAxisAlignment.CENTER,
                             wrap=True,
                             spacing = 50
