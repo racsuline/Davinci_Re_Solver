@@ -193,7 +193,7 @@ def main(page: ft.Page):
         value="",
         label="Add a suffix to the converted file name",
         hint_text="_Example",
-        on_change=lambda e: update_suffix(),
+        on_change=lambda e: update_suffix(e),
         width=400,
         border_color=ft.Colors.SURFACE_TINT,
         border_radius = 8
