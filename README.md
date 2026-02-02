@@ -26,7 +26,7 @@ This is a learning project and a personal tool made by a super new student. It w
 
 ## Dependencies
 
-This application **requires FFmpeg** to be installed on the system, use your package manager or check https://ffmpeg.org/download.html
+This application **requires FFmpeg (non-free)** to be installed on the system, use your package manager or check https://ffmpeg.org/download.html
 
 ## Acknowledgements
 
